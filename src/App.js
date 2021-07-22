@@ -16,7 +16,7 @@ function App() {
   const handleSubmission = () => {
     const formData = new FormData();
 
-    formData.append('File', selectedFile);
+    formData.append('file', selectedFile);
 
     fetch('https://video-helper.trackers.ninja/upload')
       .then((response) =>response.text())
@@ -30,7 +30,6 @@ function App() {
             body: formData,
           }
         )
-          .then((response) => response.json())
           .then((result) => {
             console.log('Success:', result);
           })
@@ -42,27 +41,27 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Let's watch a relaxing video!</h1>
-      <Stream controls src={videoIdOrSignedUrl} />
-      <h1>Upload your own video here</h1>
+      <h1>Share your video with the community!</h1>
+      <h2>Step one: choose a video file</h2>
       <div>
 			  <input type="file" name="file" onChange={changeHandler} />
 			  {isFilePicked ? (
 				  <div>
             <p>Filename: {selectedFile.name}</p>
             <p>Filetype: {selectedFile.type}</p>
-            <p>Size in bytes: {selectedFile.size}</p>
-            <p>
-              lastModifiedDate:{' '}
-              {selectedFile.lastModifiedDate.toLocaleDateString()}
-            </p>
           </div>
         ) : (
-          <p>Select a file to show details</p>
+          <p>The video file must be less than 5 min and smaller than 200MB.</p>
         )}
+        <h2>Step two: upload it!</h2>
         <div>
-          <button onClick={handleSubmission}>Submit</button>
+          <button onClick={handleSubmission}>Upload</button>
+          <p>This process may take up to a minute.</p>
         </div>
+      </div>
+      <h1>Now, let's watch some relaxing videos shared by others!</h1>
+      <div style={{width: '30%', display: 'inline-block'}}>
+        <Stream controls src={videoIdOrSignedUrl}/>
       </div>
     </div>
   );
