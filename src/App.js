@@ -82,7 +82,7 @@ function App() {
         </Toolbar>
       </AppBar>
       <Grid container spacing={1} direction="row">
-        <Grid item xs={3} style={{backgroundColor: '#f5ce42'}}/>
+        <Grid item xs={3} style={{backgroundColor: '#63d6eb'}}/>
         <Grid container item xs={6} direction="column" alignItems='center' >
           <Box m={6}/>
           <Typography variant="h3">
@@ -138,7 +138,7 @@ function App() {
             }
           </div>
         </Grid>
-        <Grid item xs={3} style={{backgroundColor: '#f5ce42'}}/>
+        <Grid item xs={3} style={{backgroundColor: '#63d6eb'}}/>
       </Grid>
     </div>
   );
