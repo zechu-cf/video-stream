@@ -1,12 +1,30 @@
 import './App.css';
 import { Stream } from "@cloudflare/stream-react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
-  const videoIdOrSignedUrl = "3477b2b4398bf9c1fb32cda0a21f0061";
-
   const [selectedFile, setSelectedFile] = useState();
   const [isFilePicked, setIsFilePicked] = useState(false);
+
+  const [videoIds, setVideoIds] = useState([]);
+
+  const loadVideos = async () => {
+    const res = await fetch('https://video-helper.trackers.ninja/videos');
+    const json = await res.json();
+    var ids = [];
+    for (let obj of json) {
+      console.log(obj.name);
+      ids.push(obj.name);
+    }
+    return ids;
+  };
+
+  const updateVideos = () => {
+    loadVideos().then((ids) => {
+      console.log("setVideoIds called!");
+      setVideoIds(ids);
+    });
+  }
 
   const changeHandler = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -15,14 +33,11 @@ function App() {
 
   const handleSubmission = () => {
     const formData = new FormData();
-
     formData.append('file', selectedFile);
-
     fetch('https://video-helper.trackers.ninja/upload')
       .then((response) =>response.text())
       .then((uploadUrl) => {
         console.log("Upload URL is " + uploadUrl);
-
         fetch(
           uploadUrl,
           {
@@ -32,12 +47,31 @@ function App() {
         )
           .then((result) => {
             console.log('Success:', result);
+            // after success, keep polling every one second until video is ready to stream
+            const uid = uploadUrl.split("/").slice(-1)[0];
+            const pollingUrl = `https://video-helper.trackers.ninja/status?uid=${uid}`;
+            var repeatingTask = setInterval(() => {
+              fetch(pollingUrl).then((res) => {
+                res.text().then((isReady) => {
+                  if (isReady === 'true') {
+                    console.log("isready!!!");
+                    updateVideos();
+                    clearInterval(repeatingTask);
+                  }
+                });
+              });
+            }, 500);
           })
           .catch((error) => {
             console.error('Error:', error);
         });
     });
   };
+
+  useEffect(() => {
+    // executes when the app first starts
+    updateVideos();
+  }, []);
 
   return (
     <div className="App">
@@ -61,7 +95,9 @@ function App() {
       </div>
       <h1>Now, let's watch some relaxing videos shared by others!</h1>
       <div style={{width: '30%', display: 'inline-block'}}>
-        <Stream controls src={videoIdOrSignedUrl}/>
+        {
+          videoIds.map((uid) => (<Stream controls src={uid} key={uid}/>))
+        }
       </div>
     </div>
   );
