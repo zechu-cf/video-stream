@@ -128,14 +128,14 @@ function App() {
           <Typography variant="h5">
             Now, let's watch some relaxing videos shared by others!
           </Typography>
-          <div style={{width: '60%', display: 'inline-block'}}>
+          <div style={{width: '80%', display: 'inline-block'}}>
             {
               videoIds.map((uid) => (
                 <Card style={{margin: 20}}>
                   <iframe
                     src={"https://iframe.videodelivery.net/" + uid}
-                    height="300"
-                    width="500"
+                    height="200"
+                    width="400"
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                     allowfullscreen={false}
                   ></iframe>
