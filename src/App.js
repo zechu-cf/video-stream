@@ -132,7 +132,13 @@ function App() {
             {
               videoIds.map((uid) => (
                 <Card style={{margin: 20}}>
-                  <Stream controls src={uid} key={uid}/>
+                  <iframe
+                    src={"https://iframe.videodelivery.net/" + uid}
+                    height="300"
+                    width="500"
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowfullscreen={false}
+                  ></iframe>
                 </Card>
               ))
             }
